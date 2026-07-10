@@ -12,7 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CardManager">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.NewCardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.EditDeckActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.NewDeckActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CardListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.DeckListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

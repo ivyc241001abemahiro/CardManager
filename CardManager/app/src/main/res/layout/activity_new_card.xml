@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editCardName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/card_name"
+        android:inputType="text"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/card_civilization" />
+
+    <CheckBox
+        android:id="@+id/chkLight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/civilization_light"/>
+
+    <CheckBox
+        android:id="@+id/chkWater"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/civilization_water" />
+
+    <CheckBox
+        android:id="@+id/chkDark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/civilization_darkness" />
+
+    <CheckBox
+        android:id="@+id/chkFire"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/civilization_fire"/>
+
+    <CheckBox android:id="@+id/chkNature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/civilization_nature"/>
+
+    <CheckBox
+        android:id="@+id/chkZero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/civilization_zero"/>
+
+    <EditText
+        android:id="@+id/editCost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/card_mainCost"
+        android:inputType="number"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/card_type"/>
+
+    <Spinner
+        android:id="@+id/spinnerType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/editRace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/card_race"/>
+
+    <EditText
+        android:id="@+id/editPower"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/card_mainPower"
+        android:inputType="number"/>
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/card_entry"/>
+
+</LinearLayout>

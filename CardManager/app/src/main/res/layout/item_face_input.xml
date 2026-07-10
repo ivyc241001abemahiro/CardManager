@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_marginBottom="12dp">
+
+
+    <!-- 面番号 -->
+    <TextView
+        android:id="@+id/txtFaceNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="面1"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+
+
+    <!-- カード名 -->
+    <EditText
+        android:id="@+id/edtFaceName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="カード名"
+        android:inputType="text"/>
+
+
+
+    <!-- コスト -->
+    <EditText
+        android:id="@+id/edtCost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="コスト"
+        android:inputType="number"/>
+
+
+
+    <!-- マナ数 -->
+    <EditText
+        android:id="@+id/edtMana"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="マナ数"
+        android:inputType="number"/>
+
+
+
+    <!-- 文明 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="文明"
+        android:textSize="16sp"/>
+
+
+    <GridLayout
+        android:id="@+id/civilizationContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:rowCount="2">
+
+
+        <CheckBox
+            android:id="@+id/checkLight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="光"
+            android:layout_marginEnd="12dp"/>
+
+
+        <CheckBox
+            android:id="@+id/checkWater"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="水"
+            android:layout_marginEnd="12dp"/>
+
+
+        <CheckBox
+            android:id="@+id/checkDark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="闇"/>
+
+
+        <CheckBox
+            android:id="@+id/checkFire"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="火"
+            android:layout_marginEnd="12dp"/>
+
+
+        <CheckBox
+            android:id="@+id/checkNature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="自然"
+            android:layout_marginEnd="12dp"/>
+
+
+        <CheckBox
+            android:id="@+id/checkZero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="無色" />
+
+
+    </GridLayout>
+
+
+
+    <!-- カードタイプ -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="カードタイプ"
+        android:textSize="16sp"/>
+
+
+    <Spinner
+        android:id="@+id/spinnerType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+
+    <!-- 種族 -->
+    <EditText
+        android:id="@+id/edtRace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="種族（ドラゴンなど）"
+        android:inputType="text"/>
+
+
+
+    <!-- パワー -->
+    <EditText
+        android:id="@+id/edtPower"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="パワー"
+        android:inputType="number"/>
+
+
+
+    <!-- 能力 -->
+    <EditText
+        android:id="@+id/edtAbility"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="能力テキスト"
+        android:minLines="3"
+        android:gravity="top"/>
+
+
+</LinearLayout>
