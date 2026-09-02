@@ -14,7 +14,7 @@
         android:id="@+id/txtFaceNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="面1"
+        android:text="@string/faceNumber1"
         android:textSize="18sp"
         android:textStyle="bold"/>
 
@@ -25,7 +25,7 @@
         android:id="@+id/edtFaceName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="カード名"
+        android:hint="@string/card_name"
         android:inputType="text"/>
 
 
@@ -35,26 +35,14 @@
         android:id="@+id/edtCost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="コスト"
+        android:hint="@string/card_cost"
         android:inputType="number"/>
-
-
-
-    <!-- マナ数 -->
-    <EditText
-        android:id="@+id/edtMana"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="マナ数"
-        android:inputType="number"/>
-
-
 
     <!-- 文明 -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="文明"
+        android:text="@string/card_civilization"
         android:textSize="16sp"/>
 
 
@@ -70,7 +58,7 @@
             android:id="@+id/checkLight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="光"
+            android:text="@string/civilization_light"
             android:layout_marginEnd="12dp"/>
 
 
@@ -78,7 +66,7 @@
             android:id="@+id/checkWater"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="水"
+            android:text="@string/civilization_water"
             android:layout_marginEnd="12dp"/>
 
 
@@ -86,14 +74,14 @@
             android:id="@+id/checkDark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="闇"/>
+            android:text="@string/civilization_darkness"/>
 
 
         <CheckBox
             android:id="@+id/checkFire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="火"
+            android:text="@string/civilization_fire"
             android:layout_marginEnd="12dp"/>
 
 
@@ -101,7 +89,7 @@
             android:id="@+id/checkNature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="自然"
+            android:text="@string/civilization_nature"
             android:layout_marginEnd="12dp"/>
 
 
@@ -109,7 +97,7 @@
             android:id="@+id/checkZero"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="無色" />
+            android:text="@string/civilization_zero" />
 
 
     </GridLayout>
@@ -120,7 +108,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="カードタイプ"
+        android:text="@string/card_type"
         android:textSize="16sp"/>
 
 
@@ -136,7 +124,7 @@
         android:id="@+id/edtRace"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="種族（ドラゴンなど）"
+        android:hint="@string/card_raceExample"
         android:inputType="text"/>
 
 
@@ -146,7 +134,7 @@
         android:id="@+id/edtPower"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="パワー"
+        android:hint="@string/card_power"
         android:inputType="number"/>
 
 
@@ -156,7 +144,7 @@
         android:id="@+id/edtAbility"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="能力テキスト"
+        android:hint="@string/card_text"
         android:minLines="3"
         android:gravity="top"/>
 

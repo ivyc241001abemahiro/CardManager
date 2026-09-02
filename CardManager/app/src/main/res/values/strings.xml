@@ -16,15 +16,20 @@
 
     <string name="card_civilization">文明</string>
     <string name="card_race">種族</string>
+    <string name="card_raceExample">種族(ドラゴンなど)</string>
     <string name="card_type">カードタイプ</string>
+    <string name="card_cost">コスト</string>
     <string name="card_mainCost">メインコスト</string>
     <string name="card_secondCost">セカンドコスト</string>
     <string name="card_thirdCost">サードコスト</string>
+    <string name="card_power">パワー</string>
     <string name="card_mainPower">メインパワー</string>
     <string name="card_secondPower">セカンドパワー</string>
     <string name="card_maxCount">上限数</string>
     <string name="card_requiredCount">必要数</string>
     <string name="card_ownedCount">所持数</string>
+    
+    <string name="card_text">テキスト</string>
 
     <string name="civilization_fire">火</string>
     <string name="civilization_water">水</string>
@@ -35,6 +40,8 @@
 
     <string name="card_date1">文明 / コスト</string>
     <string name="card_info">%1$s　コスト%2$d</string>
+
+    <string name="faceNumber1">面1</string>
 
     <string name="add">追加</string>
     <string name="add_deck">+ 新規作成</string>

@@ -294,18 +294,48 @@ class FaceInputAdapter(
         holder.spinnerType.setSelection(
             when(face.type){
 
-                "呪文" -> 1
-                "タマシード" -> 2
-                "クロスギア" -> 3
-                "ドラグハート" -> 4
-                "サイキック" -> 5
-                "フィールド" -> 6
+                "クリーチャー" -> 1
+                "呪文" -> 2
+                "タマシード" -> 3
+                "クロスギア" -> 4
+                "ドラグハート" -> 5
+                "サイキック" -> 6
+                "フィールド" -> 7
+                "特殊" -> 8
 
                 else -> 0
             }
         )
 
+        // タイプ変更
+        holder.spinnerType.onItemSelectedListener =
+            object : android.widget.AdapterView.OnItemSelectedListener {
 
+                override fun onItemSelected(
+                    parent: android.widget.AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+
+                    face.type =
+                        when (position) {
+                            1 -> "呪文"
+                            2 -> "タマシード"
+                            3 -> "クロスギア"
+                            4 -> "ドラグハート"
+                            5 -> "サイキック"
+                            6 -> "フィールド"
+                            else -> ""
+                        }
+                }
+
+                override fun onNothingSelected(
+                    parent: android.widget.AdapterView<*>?
+                ) {
+                    face.type = ""
+                }
+            }
     }
 
 
