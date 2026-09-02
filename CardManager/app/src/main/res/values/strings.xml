@@ -41,6 +41,7 @@
     <string name="card_date1">文明 / コスト</string>
     <string name="card_info">%1$s　コスト%2$d</string>
 
+    <string name="add_face">＋ 面を追加</string>
     <string name="faceNumber1">面1</string>
 
     <string name="add">追加</string>

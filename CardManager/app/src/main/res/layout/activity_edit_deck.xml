@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- デッキ名 -->
     <EditText
         android:id="@+id/editDeckName"
         android:layout_width="match_parent"
@@ -14,6 +15,23 @@
         android:inputType="text"
         android:autofillHints="name"/>
 
+    <!-- 面一覧 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerFaces"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+
+    <!-- 面追加 -->
+    <Button
+        android:id="@+id/btnAddFace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="＋ 面を追加"/>
+
+
+    <!-- 保存 -->
     <Button
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
