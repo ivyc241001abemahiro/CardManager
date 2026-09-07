@@ -7,17 +7,19 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [
-        Deck::class,
         Card::class,
-        CardFace::class
+        CardVariant::class,
+        CardFace::class,
+        Deck::class,
+        DeckCardCrossRef::class
     ],
-    version = 3
+    version = 10,
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun deckDao(): DeckDao
     abstract fun cardDao(): CardDao
-    abstract fun cardFaceDao(): CardFaceDao
+    abstract fun deckDao(): DeckDao
 
     companion object {
         @Volatile
@@ -28,9 +30,15 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "card_database"
+                    "card_manager_db"
                 )
-                    .fallbackToDestructiveMigration(dropAllTables = true)
+                    .addCallback(object : Callback() {
+                        override fun onOpen(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                            super.onOpen(db)
+                            db.execSQL("PRAGMA foreign_keys=ON;")
+                        }
+                    })
+                    .fallbackToDestructiveMigration()
                     .build()
 
                 INSTANCE = instance

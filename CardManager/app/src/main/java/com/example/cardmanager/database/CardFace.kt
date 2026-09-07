@@ -16,31 +16,10 @@ import androidx.room.PrimaryKey
     ]
 )
 data class CardFace(
-
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-
-    // Card.id
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val cardId: Int,
-
-    // 1面目・2面目・3面目
-    val faceNo: Int,
-
-    // 名前
     val name: String,
-
-    // 文明
-    val civilization: String,
-
-    // コスト
     val cost: Int,
-
-    // タイプ
-    val type: String,
-
-    // 種族
-    val race: String,
-
-    // パワー
-    val power: Int? = null
+    val power: Int? = null,
+    val type: String
 )

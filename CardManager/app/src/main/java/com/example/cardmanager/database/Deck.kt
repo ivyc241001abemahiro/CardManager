@@ -5,9 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "decks")
 data class Deck(
-
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-
-    val name: String
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val deckName: String,
+    val createDate: String,
+    val zoneType: String // 例: "Main", "HyperSpatial"
 )
