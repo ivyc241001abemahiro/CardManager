@@ -19,6 +19,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -49,7 +50,6 @@ fun CardEditScreen(
     )
 ) {
     val scope = rememberCoroutineScope()
-    var civilization by remember { mutableStateOf("") }
     var maxCount by remember { mutableIntStateOf(4) }
     var requiredCount by remember { mutableIntStateOf(0) }
     
@@ -64,7 +64,6 @@ fun CardEditScreen(
             val cardWithVariants = viewModel.getCardById(cardId)
             cardWithVariants?.let {
                 val c = it.card
-                civilization = c.civilization
                 maxCount = c.maxCount
                 requiredCount = c.requiredCount
                 
@@ -97,9 +96,16 @@ fun CardEditScreen(
                 actions = {
                     IconButton(onClick = {
                         scope.launch {
+                            // 各面の文明を統合してカード全体の文明を算出 (重複排除)
+                            val combinedCivilization = faces
+                                .flatMap { it.civilization.split("/") }
+                                .filter { it.isNotBlank() }
+                                .distinct()
+                                .joinToString("/")
+
                             val card = Card(
                                 id = if (cardId == null || cardId == -1) 0 else cardId,
-                                civilization = civilization,
+                                civilization = combinedCivilization,
                                 maxCount = maxCount,
                                 requiredCount = requiredCount
                             )
@@ -145,48 +151,6 @@ fun CardEditScreen(
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text("文明", style = MaterialTheme.typography.labelMedium, color = Color.DarkGray)
-                
-                val allCivilizations = listOf("光", "水", "闇", "火", "自然", "ゼロ")
-                val selectedCivs = remember(civilization) { 
-                    civilization.split("/").filter { it.isNotBlank() }.toSet() 
-                }
-
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    allCivilizations.chunked(3).forEach { chunk ->
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            chunk.forEach { civ ->
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .clickable {
-                                            val newSet = if (selectedCivs.contains(civ)) {
-                                                selectedCivs - civ
-                                            } else {
-                                                selectedCivs + civ
-                                            }
-                                            civilization = allCivilizations.filter { newSet.contains(it) }.joinToString("/")
-                                        }
-                                ) {
-                                    Checkbox(
-                                        checked = selectedCivs.contains(civ),
-                                        onCheckedChange = null,
-                                        colors = CheckboxDefaults.colors(
-                                            uncheckedColor = Color.Gray,
-                                            checkedColor = MaterialTheme.colorScheme.primary
-                                        )
-                                    )
-                                    Text(text = civ, style = MaterialTheme.typography.bodyMedium, color = Color.Black)
-                                }
-                            }
-                            if (chunk.size < 3) {
-                                Spacer(modifier = Modifier.weight((3 - chunk.size).toFloat()))
-                            }
-                        }
-                    }
-                }
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 Text("デッキ投入制限数", style = MaterialTheme.typography.labelMedium, color = Color.DarkGray)
@@ -293,6 +257,7 @@ fun CardEditScreen(
                     FaceItem(
                         face = face,
                         onNameChange = { faces[index] = faces[index].copy(name = it) },
+                        onCivilizationChange = { faces[index] = faces[index].copy(civilization = it) },
                         onCostChange = { faces[index] = faces[index].copy(cost = it) },
                         onPowerChange = { faces[index] = faces[index].copy(power = it) },
                         onTypeChange = { faces[index] = faces[index].copy(type = it) },
@@ -335,6 +300,7 @@ fun CardEditScreen(
 fun FaceItem(
     face: CardFace,
     onNameChange: (String) -> Unit,
+    onCivilizationChange: (String) -> Unit,
     onCostChange: (Int) -> Unit,
     onPowerChange: (Int?) -> Unit,
     onTypeChange: (String) -> Unit,
@@ -367,6 +333,61 @@ fun FaceItem(
                     Icon(Icons.Default.Delete, contentDescription = "削除", tint = Color.Gray)
                 }
             }
+
+            Spacer(modifier = Modifier.height(4.dp))
+            Text("文明", style = MaterialTheme.typography.labelSmall, color = Color.DarkGray)
+            val allCivilizations = listOf("光", "水", "闇", "火", "自然", "ゼロ")
+            val selectedCivs = face.civilization.split("/").filter { it.isNotBlank() }.toSet()
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy((-8).dp)
+            ) {
+                allCivilizations.chunked(3).forEach { chunk ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        chunk.forEach { civ ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(32.dp)
+                                    .clickable {
+                                        val newSet = if (selectedCivs.contains(civ)) {
+                                            selectedCivs - civ
+                                        } else {
+                                            selectedCivs + civ
+                                        }
+                                        onCivilizationChange(allCivilizations.filter { newSet.contains(it) }.joinToString("/"))
+                                    }
+                            ) {
+                                Checkbox(
+                                    checked = selectedCivs.contains(civ),
+                                    onCheckedChange = { checked ->
+                                        val newSet = if (checked) {
+                                            selectedCivs + civ
+                                        } else {
+                                            selectedCivs - civ
+                                        }
+                                        onCivilizationChange(allCivilizations.filter { newSet.contains(it) }.joinToString("/"))
+                                    },
+                                    modifier = Modifier.size(32.dp).scale(0.75f),
+                                    colors = CheckboxDefaults.colors(
+                                        uncheckedColor = Color.Gray,
+                                        checkedColor = MaterialTheme.colorScheme.primary
+                                    )
+                                )
+                                Text(text = civ, style = MaterialTheme.typography.bodySmall, color = Color.Black)
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = face.cost.toString(),

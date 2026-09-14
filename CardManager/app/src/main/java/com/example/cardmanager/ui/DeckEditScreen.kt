@@ -29,6 +29,9 @@ import com.example.cardmanager.viewmodel.DeckViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import androidx.compose.foundation.Image
@@ -235,7 +238,13 @@ fun DeckEditScreen(
                         )
                     }
                     
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(4),
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(2.dp),
+                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
                         items(filteredList) { info ->
                             val canAddInZone = when (selectedZone) {
                                 "Main" -> mainCount < 40
@@ -243,7 +252,7 @@ fun DeckEditScreen(
                                 "Psychic" -> psychicCount < 8
                                 else -> true
                             }
-                            DeckCardItem(
+                            DeckCardGridItem(
                                 info = info,
                                 totalCountForCard = totalCountsByCardId[info.cardId] ?: 0,
                                 canAddMore = canAddInZone,
@@ -293,66 +302,86 @@ fun DeckEditScreen(
 }
 
 @Composable
-fun DeckCardItem(
+fun DeckCardGridItem(
     info: DeckCardInfo,
     totalCountForCard: Int,
     canAddMore: Boolean,
     onUpdateCount: (Int) -> Unit,
     onDelete: () -> Unit
 ) {
-    Card(
+    Box(
         modifier = Modifier
+            .aspectRatio(0.714f) // デュエマの縦横比に近い値
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = 0.05f)),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color.Black.copy(alpha = 0.1f))
+            .clickable {
+                if (totalCountForCard < info.maxCount && canAddMore) {
+                    onUpdateCount(info.count + 1)
+                }
+            }
     ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // ... (画像とテキストの表示は変更なし)
+        // カード画像
+        if (!info.imagePath.isNullOrEmpty()) {
+            AsyncImage(
+                model = info.imagePath,
+                contentDescription = info.cardName,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        } else {
             Box(
                 modifier = Modifier
-                    .size(50.dp)
-                    .padding(end = 8.dp),
+                    .fillMaxSize()
+                    .background(Color.LightGray),
                 contentAlignment = Alignment.Center
             ) {
-                if (!info.imagePath.isNullOrEmpty()) {
-                    AsyncImage(
-                        model = info.imagePath,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray)
-                }
+                Text(
+                    text = info.cardName,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.DarkGray,
+                    modifier = Modifier.padding(4.dp)
+                )
             }
+        }
 
-            Column(modifier = Modifier.weight(1f)) {
-                Text(info.cardName, style = MaterialTheme.typography.bodyLarge, color = Color.Black)
-                Text("${info.variantName} - ${info.zoneType}", style = MaterialTheme.typography.bodySmall, color = Color.DarkGray)
-            }
-            
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { if (info.count > 1) onUpdateCount(info.count - 1) }) {
-                    Text("-", style = MaterialTheme.typography.titleLarge, color = Color.Black)
-                }
-                Text("${info.count}", modifier = Modifier.padding(horizontal = 8.dp), style = MaterialTheme.typography.bodyLarge, color = Color.Black)
-                IconButton(
-                    onClick = { if (totalCountForCard < info.maxCount && canAddMore) onUpdateCount(info.count + 1) },
-                    enabled = totalCountForCard < info.maxCount && canAddMore
-                ) {
-                    Text("+", style = MaterialTheme.typography.titleLarge, color = if (totalCountForCard < info.maxCount && canAddMore) Color.Black else Color.Gray)
-                }
-                IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "削除", tint = Color.Gray)
-                }
+        // 枚数バッジ (右下)
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(2.dp)
+                .background(Color.Black.copy(alpha = 0.7f), shape = MaterialTheme.shapes.small)
+                .padding(horizontal = 4.dp, vertical = 2.dp)
+        ) {
+            Text(
+                text = "x${info.count}",
+                color = Color.White,
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
+
+        // 削除ボタン (右上) - アイコンサイズを大きく調整しつつ、タップ範囲を確保
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .size(48.dp)
+                .clickable { if (info.count > 1) onUpdateCount(info.count - 1) else onDelete() },
+            contentAlignment = Alignment.TopEnd
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .size(32.dp)
+                    .background(Color.Black.copy(alpha = 0.6f), shape = androidx.compose.foundation.shape.CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "削除",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -387,6 +416,9 @@ fun AddCardToDeckDialog(
                 LazyColumn(modifier = Modifier.heightIn(max = 400.dp)) {
                     items(cardList) { cardWithVariants ->
                         val cardName = cardWithVariants.faces.joinToString("/") { it.name }
+                        val faceDetails = cardWithVariants.faces.joinToString(" / ") { 
+                            "${it.civilization} ${it.type} (コスト:${it.cost})"
+                        }
                         val cardId = cardWithVariants.card.id
                         val currentTotal = currentDeckTotals[cardId] ?: 0
                         val maxCount = cardWithVariants.card.maxCount
@@ -402,15 +434,20 @@ fun AddCardToDeckDialog(
                                     ) 
                                 },
                                 supportingContent = { 
-                                    val errorText = when {
+                                    val statusText = when {
                                         isAtCardLimit -> "デッキ投入制限上限です (${maxCount}枚)"
                                         zoneLimitReached -> "ゾーン上限に達しています"
                                         else -> "所持数: ${variant.ownedCount}"
                                     }
-                                    Text(
-                                        text = errorText,
-                                        color = if (canSelect) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error
-                                    ) 
+                                    Column {
+                                        if (faceDetails.isNotBlank()) {
+                                            Text(text = faceDetails, style = MaterialTheme.typography.bodySmall)
+                                        }
+                                        Text(
+                                            text = statusText,
+                                            color = if (canSelect) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error
+                                        )
+                                    }
                                 },
                                 modifier = Modifier.clickable(enabled = canSelect) { onCardSelected(variant.id) }
                             )

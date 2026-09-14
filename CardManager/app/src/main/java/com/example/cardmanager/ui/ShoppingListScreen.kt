@@ -113,13 +113,21 @@ fun ShoppingCardItem(cardWithVariants: CardWithVariants) {
     val card = cardWithVariants.card
     val firstVariant = cardWithVariants.variants.firstOrNull()
     val names = cardWithVariants.faces.joinToString("/") { it.name }
+    val faceDetails = cardWithVariants.faces.joinToString(" / ") {
+        "${it.civilization} ${it.type} (コスト:${it.cost})"
+    }
     val totalOwned = cardWithVariants.variants.sumOf { it.ownedCount }
     val missingCount = card.requiredCount - totalOwned
 
     ListItem(
         headlineContent = { Text(names.ifBlank { "名称未設定" }, color = Color.Black) },
         supportingContent = {
-            Text("希望: ${card.requiredCount} / 所持: $totalOwned", color = Color.DarkGray)
+            Column {
+                if (faceDetails.isNotBlank()) {
+                    Text(faceDetails, color = Color.DarkGray)
+                }
+                Text("希望: ${card.requiredCount} / 所持: $totalOwned", color = Color.DarkGray)
+            }
         },
         leadingContent = {
             Box(modifier = Modifier.size(56.dp), contentAlignment = Alignment.Center) {

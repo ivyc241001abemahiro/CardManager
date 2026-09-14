@@ -13,7 +13,7 @@ import androidx.room.RoomDatabase
         Deck::class,
         DeckCardCrossRef::class
     ],
-    version = 10,
+    version = 11,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

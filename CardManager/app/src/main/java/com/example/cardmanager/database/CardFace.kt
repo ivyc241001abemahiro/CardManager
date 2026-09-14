@@ -21,5 +21,6 @@ data class CardFace(
     val name: String,
     val cost: Int,
     val power: Int? = null,
-    val type: String
+    val type: String,
+    val civilization: String = ""
 )

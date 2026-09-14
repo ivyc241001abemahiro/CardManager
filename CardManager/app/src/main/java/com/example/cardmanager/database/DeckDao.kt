@@ -44,6 +44,7 @@ interface DeckDao {
             cv.imagePath,
             cv.cardId,
             (SELECT group_concat(name, '/') FROM card_faces WHERE cardId = c.id) AS cardName,
+            (SELECT group_concat(civilization || ' ' || type || ' (コスト:' || cost || ')', ' / ') FROM card_faces WHERE cardId = c.id) AS faceDetails,
             c.maxCount
         FROM deck_card_cross_ref dc
         JOIN card_variants cv ON dc.variantId = cv.id
@@ -65,6 +66,7 @@ interface DeckDao {
             cv.imagePath,
             cv.cardId,
             (SELECT group_concat(name, '/') FROM card_faces WHERE cardId = c.id) AS cardName,
+            (SELECT group_concat(civilization || ' ' || type || ' (コスト:' || cost || ')', ' / ') FROM card_faces WHERE cardId = c.id) AS faceDetails,
             c.maxCount
         FROM deck_card_cross_ref dc
         JOIN card_variants cv ON dc.variantId = cv.id
@@ -83,6 +85,7 @@ data class DeckCardInfo(
     val imagePath: String?,
     val cardId: Int,
     val cardName: String,
+    val faceDetails: String?,
     val maxCount: Int
 )
 
