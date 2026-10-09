@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,8 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,6 +53,7 @@ fun CardEditScreen(
     )
 ) {
     val scope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
     var maxCount by remember { mutableIntStateOf(4) }
     var requiredCount by remember { mutableIntStateOf(0) }
     
@@ -123,7 +127,15 @@ fun CardEditScreen(
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                }
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.background),
                 contentDescription = null,
@@ -200,41 +212,21 @@ fun CardEditScreen(
                     
                     if (isOtherSelected) {
                         Spacer(modifier = Modifier.height(8.dp))
-                        OutlinedTextField(
-                            value = maxCount.toString(),
-                            onValueChange = { maxCount = it.toIntOrNull() ?: 0 },
-                            label = { Text("上限枚数を入力") },
-                            modifier = Modifier.fillMaxWidth(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            singleLine = true,
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = Color.Black,
-                                unfocusedTextColor = Color.Black,
-                                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                                unfocusedLabelColor = Color.Gray,
-                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                unfocusedBorderColor = Color.Gray
-                            )
+                        NumericOutlinedTextField(
+                            value = maxCount,
+                            onValueChange = { maxCount = it },
+                            label = "上限枚数を入力",
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
                 
                 Spacer(modifier = Modifier.height(16.dp))
-                OutlinedTextField(
-                    value = requiredCount.toString(),
-                    onValueChange = { requiredCount = it.toIntOrNull() ?: 0 },
-                    label = { Text("欲しい枚数 (希望数)") },
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
-                        focusedLabelColor = MaterialTheme.colorScheme.primary,
-                        unfocusedLabelColor = Color.Gray,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = Color.Gray
-                    )
+                NumericOutlinedTextField(
+                    value = requiredCount,
+                    onValueChange = { requiredCount = it },
+                    label = "欲しい枚数 (希望数)",
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -389,20 +381,11 @@ fun FaceItem(
             Spacer(modifier = Modifier.height(32.dp))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
-                    value = face.cost.toString(),
-                    onValueChange = { onCostChange(it.toIntOrNull() ?: 0) },
-                    label = { Text("コスト") },
-                    modifier = Modifier.weight(1f),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
-                        focusedLabelColor = MaterialTheme.colorScheme.primary,
-                        unfocusedLabelColor = Color.Gray,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = Color.Gray
-                    )
+                NumericOutlinedTextField(
+                    value = face.cost,
+                    onValueChange = onCostChange,
+                    label = "コスト",
+                    modifier = Modifier.weight(1f)
                 )
                 OutlinedTextField(
                     value = face.power?.toString() ?: "",
@@ -436,6 +419,46 @@ fun FaceItem(
             )
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NumericOutlinedTextField(
+    value: Int,
+    onValueChange: (Int) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    var text by remember { mutableStateOf(if (value == 0) "" else value.toString()) }
+
+    LaunchedEffect(value) {
+        val currentInt = text.toIntOrNull() ?: 0
+        if (value != currentInt) {
+            text = if (value == 0) "" else value.toString()
+        }
+    }
+
+    OutlinedTextField(
+        value = text,
+        onValueChange = { newText ->
+            if (newText.isEmpty() || newText.all { it.isDigit() }) {
+                text = newText
+                onValueChange(newText.toIntOrNull() ?: 0)
+            }
+        },
+        label = { Text(label) },
+        modifier = modifier,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        singleLine = true,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = Color.Gray,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = Color.Gray
+        )
+    )
 }
 
 @Composable
@@ -524,20 +547,11 @@ fun VariantItem(
                 }
                 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    OutlinedTextField(
-                        value = variant.ownedCount.toString(),
-                        onValueChange = { onCountChange(it.toIntOrNull() ?: 0) },
-                        label = { Text("所持") },
-                        modifier = Modifier.width(70.dp),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black,
-                            focusedLabelColor = MaterialTheme.colorScheme.primary,
-                            unfocusedLabelColor = Color.Gray,
-                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = Color.Gray
-                        )
+                    NumericOutlinedTextField(
+                        value = variant.ownedCount,
+                        onValueChange = onCountChange,
+                        label = "所持",
+                        modifier = Modifier.width(70.dp)
                     )
                     IconButton(onClick = onDelete) {
                         Icon(Icons.Default.Delete, contentDescription = "削除", tint = Color.Gray)

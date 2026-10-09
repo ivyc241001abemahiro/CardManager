@@ -39,6 +39,9 @@ import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.example.cardmanager.R
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,6 +60,7 @@ fun DeckEditScreen(
     )
 ) {
     val scope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
     var name by remember { mutableStateOf("") }
     var zoneType by remember { mutableStateOf("Main") }
     var selectedZone by remember { mutableStateOf("Main") }
@@ -120,7 +124,15 @@ fun DeckEditScreen(
             }
         }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                }
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.background),
                 contentDescription = null,
@@ -141,9 +153,17 @@ fun DeckEditScreen(
                     .background(Color.White.copy(alpha = 0.85f), shape = MaterialTheme.shapes.medium)
                     .padding(16.dp)
             ) {
+                var nameText by remember { mutableStateOf(name) }
+                LaunchedEffect(name) {
+                    if (nameText != name) nameText = name
+                }
+                
                 OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
+                    value = nameText,
+                    onValueChange = { 
+                        nameText = it
+                        name = it 
+                    },
                     label = { Text("デッキ名") },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
